@@ -192,7 +192,8 @@ struct ShelfTilesView: NSViewRepresentable {
                                                     columns: columns,
                                                     tileSize: tile,
                                                     spacing: Self.spacing,
-                                                    inset: inset)
+                                                    inset: inset,
+                                                    mirrored: L10n.shared.language.isRightToLeft)
             document.addSubview(view)
         }
         let contentHeight = inset * 2 + CGFloat(rows) * tile.height + CGFloat(max(0, rows - 1)) * Self.spacing
@@ -243,7 +244,8 @@ struct ShelfTilesView: NSViewRepresentable {
                                                columns: columns,
                                                tileSize: Self.tileSize,
                                                spacing: Self.spacing,
-                                               inset: Self.inset)
+                                               inset: Self.inset,
+                                               mirrored: L10n.shared.language.isRightToLeft)
         NSAnimationContext.runAnimationGroup { context in
             context.duration = 0.2
             context.allowsImplicitAnimation = true
