@@ -439,7 +439,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate, NSW
         // out, so the panel keeps the inset content there.
         popover.hasFullSizeContent = PanelSurface.popoverHostsFullSizeContent
         popover.delegate = self
-        let host = NSHostingController(rootView: MenuPanelView())
+        let host = NSHostingController(rootView: MenuPanelView().appLayoutDirection())
         host.sizingOptions = .preferredContentSize
         popover.contentViewController = host
         AppAppearanceController.shared.follow(panel: popover)
@@ -1629,7 +1629,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate, NSW
             : nil) ?? NSScreen.withMouse
         let createdWindow = settingsWindow == nil
         if settingsWindow == nil {
-            let host = NSHostingController(rootView: SettingsView())
+            let host = NSHostingController(rootView: SettingsView().appLayoutDirection())
             // Empty on purpose: any automatic option here (.intrinsicContentSize,
             // .maxSize, .preferredContentSize) lets SwiftUI's content - which
             // varies wildly page to page, from a short toggle list to Kill
@@ -1691,7 +1691,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate, NSW
         closePopover()
         let host = NSHostingController(rootView: FeedbackView(initialKind: kind) { [weak self] in
             self?.feedbackWindow?.close()
-        })
+        }.appLayoutDirection())
         if let window = feedbackWindow {
             window.contentViewController = host
         } else {
@@ -1954,7 +1954,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate, NSW
         let host = NSHostingController(rootView: OnboardingView(mode: mode) { [weak self] in
             self?.markOnboardingComplete()
             self?.onboardingWindow?.close()
-        })
+        }.appLayoutDirection())
         host.sizingOptions = .preferredContentSize
         let window = NSWindow(contentViewController: host)
         let isFirstRun = !UserDefaults.standard.bool(forKey: DefaultsKey.hasOnboarded)
@@ -2056,7 +2056,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate, NSW
         }
         let host = NSHostingController(rootView: UpdateHighlightsView(
             onFinish: { [weak self] in self?.updateHighlightsWindow?.close() }
-        ))
+        ).appLayoutDirection())
         host.sizingOptions = .preferredContentSize
         let window = NSPanel(contentViewController: host)
         window.title = L10n.shared.s.highlightsTitle
@@ -2133,7 +2133,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate, NSW
                 self?.markUpdateShowcaseIntroSeen()
                 self?.updateShowcaseWindow?.close()
             }
-        ))
+        ).appLayoutDirection())
         host.sizingOptions = .preferredContentSize
         let window = NSWindow(contentViewController: host)
         window.title = L10n.shared.s.updateShowcaseTitle
@@ -2178,7 +2178,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate, NSW
                 self?.supportIntroCanClose = true
                 self?.supportIntroWindow?.close()
             }
-        ))
+        ).appLayoutDirection())
         host.sizingOptions = .preferredContentSize
         let window = NSPanel(contentViewController: host)
         window.title = L10n.shared.s.supportIntroTitle
@@ -2252,7 +2252,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate, NSW
             onCancel: { [weak self] in
                 self?.updatePreviewWindow?.close()
             }
-        ))
+        ).appLayoutDirection())
         host.sizingOptions = .preferredContentSize
         let window = NSWindow(contentViewController: host)
         window.title = L10n.shared.s.tabReleaseNotes
