@@ -857,11 +857,14 @@ final class NotchService: ObservableObject {
 
     /// How far the island's centre sits right of the camera's. Only a closed
     /// notice beside a camera reaches further toward its wider side; a
-    /// capsule runs its notices end to end.
+    /// capsule runs its notices end to end. The notice's wings follow the
+    /// reading order, so in a right-to-left language its trailing side is
+    /// the camera's left and the island reaches the other way.
     var surfaceShift: CGFloat {
         guard !geometry.floats, !fullscreenCompact, captureControls == nil, !expanded, !dragPlaceholder,
               let notice, !noticeExpanded else { return 0 }
-        return geometry.noticeShift(notice.wings(in: geometry))
+        let shift = geometry.noticeShift(notice.wings(in: geometry))
+        return L10n.shared.language.isRightToLeft ? -shift : shift
     }
 
     /// The open island around the Command Bar: the bar's width within the
@@ -3968,14 +3971,13 @@ extension NotchService {
         guard header.headerCameraGap > 0 else { return true }
         let side = (contentSize.width - header.headerCameraGap) / 2
         let lane = NotchMascotSupport.residentLane(stripHeight: geometry.stripHeight)
-        switch mascotSide {
-        case .left:
-            // A level shown in the header, or the sections' search, fills that side.
-            guard !showingSections, notice?.level == nil else { return false }
-            return header.headerTitleWidth + lane <= side
-        case .right:
-            return headerActionsWidth + lane <= side
-        }
+        // The header follows the reading order, so in a right-to-left
+        // language its title is on the camera's right and its actions on the left.
+        let titleSide: NotchMascotSide = L10n.shared.language.isRightToLeft ? .right : .left
+        guard mascotSide == titleSide else { return headerActionsWidth + lane <= side }
+        // A level shown in the header, or the sections' search, fills that side.
+        guard !showingSections, notice?.level == nil else { return false }
+        return header.headerTitleWidth + lane <= side
     }
 
     /// The header's actions beside the camera: its menu, and the update
